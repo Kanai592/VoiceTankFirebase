@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "voice-tank-app",
+    "staging": "voice-tank-app"
+  }
+}
