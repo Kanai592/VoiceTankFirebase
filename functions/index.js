@@ -35,21 +35,21 @@ app.use(cors);
 // 1/29(wed)
 
 
-router.get('/test', async (req, res, next) => {
-  try {
-    const itemSnapshot = await db.collection('items').get();
-    const items = [];
-    itemSnapshot.forEach(doc => {
-      items.push({
-        id: doc.id,
-        data: doc.data()
-      });
-    });
-    res.json(items);
-  } catch (e) {
-    next(e);
-  }
-});
+// router.get('/test', async (req, res, next) => {
+//   try {
+//     const itemSnapshot = await db.collection('items').get();
+//     const items = [];
+//     itemSnapshot.forEach(doc => {
+//       items.push({
+//         id: doc.id,
+//         data: doc.data()
+//       });
+//     });
+//     res.json(items);
+//   } catch (e) {
+//     next(e);
+//   }
+// });
 
 router.post('/kanai-special', function(req, res, next) {
   var data = req.body
@@ -65,6 +65,8 @@ router.post('/kanai-special', function(req, res, next) {
   });
 })
 
+
+// 生徒一覧取得
 router.get('/classes/:class_id/students', async (req, res, next) => {
   try {
     const classId = req.params.class_id;
@@ -87,6 +89,32 @@ router.get('/classes/:class_id/students', async (req, res, next) => {
   }
 });
 
+// 生徒一人分を取得
+router.get('/classes/:class_id/students/:student_number', async (req, res, next) => {
+  try {
+    const classId = req.params.class_id;
+    const student_number = req.params.student_number;
+
+    const snapshot = await db.collection('students')
+      .where('class_id', '==', parseInt(classId))
+      .where('student_number', '==', student_number)
+      .get();
+
+    const students = [];
+    snapshot.forEach(doc => {
+      students.push({
+        id: doc.id,
+        data: doc.data()
+      });
+    });
+
+    res.json(students);
+  } catch (e) {
+    next(e);
+  }
+});
+
+// 評価に関する取得
 router.get('/classes/:class_id/students/:student_number/evaluations', async (req, res, next) => {
   try {
     const classId = req.params.class_id;
@@ -110,6 +138,7 @@ router.get('/classes/:class_id/students/:student_number/evaluations', async (req
   }
 });
 
+// 成績を保存
 router.post('/classes/:class_id/students/:student_number', async (req, res, next) => {
   try {
     const classId = req.params.class_id;
